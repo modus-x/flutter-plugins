@@ -84,8 +84,8 @@ class FlutterWindow: BaseFlutterWindow {
 
     window.delegate = self
     window.isReleasedWhenClosed = false
-    window.titleVisibility = .hidden
-    window.titlebarAppearsTransparent = true
+    window.titleVisibility = .visible
+    window.titlebarAppearsTransparent = false
   }
 
   deinit {
