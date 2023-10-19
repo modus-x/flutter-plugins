@@ -33,6 +33,8 @@ abstract class WindowController {
   /// Center the window on the screen.
   Future<void> center();
 
+  Future<void> destroy();
+
   /// Set the window's title.
   Future<void> setTitle(String title);
 

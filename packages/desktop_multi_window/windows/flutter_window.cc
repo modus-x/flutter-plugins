@@ -149,9 +149,6 @@ LRESULT FlutterWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wparam, LP
   // Give Flutter, including plugins, an opportunity to handle window messages.
   if (flutter_controller_) {
     std::optional<LRESULT> result = flutter_controller_->HandleTopLevelWindowProc(hwnd, message, wparam, lparam);
-    if (result) {
-      return *result;
-    }
   }
 
   auto child_content_ = flutter_controller_ ? flutter_controller_->view()->GetNativeWindow() : nullptr;

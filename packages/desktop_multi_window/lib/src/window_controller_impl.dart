@@ -77,4 +77,9 @@ class WindowControllerMainImpl extends WindowController {
       'name': name,
     });
   }
+
+  @override
+  Future<void> destroy() {
+    return _channel.invokeMethod('destroy', _id);
+  }
 }

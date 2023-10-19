@@ -17,6 +17,8 @@ class BaseFlutterWindow {
 
   void Show();
 
+  void Destroy();
+
   void Hide();
 
   void Close();
@@ -27,9 +29,8 @@ class BaseFlutterWindow {
 
   void Center();
 
- protected:
-
   virtual HWND GetWindowHandle() = 0;
+
 
 };
 

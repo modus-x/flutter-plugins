@@ -85,6 +85,14 @@ void BaseFlutterWindow::Close() {
   PostMessage(handle, WM_SYSCOMMAND, SC_CLOSE, 0);
 }
 
+void BaseFlutterWindow::Destroy() {
+    auto handle = GetWindowHandle();
+    if (!handle) {
+        return;
+    }
+    PostMessage(handle, WM_DESTROY, 0, 0);
+}
+
 void BaseFlutterWindow::Show() {
   auto handle = GetWindowHandle();
   if (!handle) {
