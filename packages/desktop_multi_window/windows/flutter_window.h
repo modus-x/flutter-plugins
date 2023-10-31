@@ -18,9 +18,9 @@
 class FlutterWindowCallback {
 
  public:
-  virtual void OnWindowClose(int64_t id) = 0;
+  virtual void OnWindowClose(int id) = 0;
 
-  virtual void OnWindowDestroy(int64_t id) = 0;
+  virtual void OnWindowDestroy(int id) = 0;
 
 };
 
@@ -28,7 +28,7 @@ class FlutterWindow : public BaseFlutterWindow {
 
  public:
 
-  FlutterWindow(int64_t id, std::string args, const std::shared_ptr<FlutterWindowCallback> &callback);
+  FlutterWindow(int id, std::string args, const std::shared_ptr<FlutterWindowCallback> &callback);
   ~FlutterWindow() override;
 
   WindowChannel *GetWindowChannel() override {
@@ -45,7 +45,7 @@ class FlutterWindow : public BaseFlutterWindow {
 
   HWND window_handle_;
 
-  int64_t id_;
+  int id_;
 
   // The Flutter instance hosted by this window.
   std::unique_ptr<flutter::FlutterViewController> flutter_controller_;

@@ -19,37 +19,37 @@ class MultiWindowManager : public std::enable_shared_from_this<MultiWindowManage
 
   MultiWindowManager();
 
-  int64_t Create(std::string args);
+  int Create(std::string args);
 
   void AttachFlutterMainWindow(HWND main_window_handle, std::unique_ptr<WindowChannel> window_channel);
 
-  void Show(int64_t id);
+  void Show(int id);
 
-  void Hide(int64_t id);
+  void Hide(int id);
 
-  void Close(int64_t id);
+  void Close(int id);
 
-  void Destroy(int64_t id);
+  void Destroy(int id);
 
-  void SetFrame(int64_t id, double_t x, double_t y, double_t width, double_t height);
+  void SetFrame(int id, double_t x, double_t y, double_t width, double_t height);
 
-  void Center(int64_t id);
+  void Center(int id);
 
-  void SetTitle(int64_t id, const std::string &title);
+  void SetTitle(int id, const std::string &title);
 
-  std::vector<int64_t> GetAllSubWindowIds();
+  std::vector<int> GetAllSubWindowIds();
 
-  void OnWindowClose(int64_t id) override;
+  void OnWindowClose(int id) override;
 
-  void OnWindowDestroy(int64_t id) override;
+  void OnWindowDestroy(int id) override;
 
  private:
 
-  std::map<int64_t, std::unique_ptr<BaseFlutterWindow>> windows_;
+  std::map<int, std::unique_ptr<BaseFlutterWindow>> windows_;
 
   void HandleWindowChannelCall(
-      int64_t from_window_id,
-      int64_t target_window_id,
+      int from_window_id,
+      int target_window_id,
       const std::string &call,
       flutter::EncodableValue *arguments,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result

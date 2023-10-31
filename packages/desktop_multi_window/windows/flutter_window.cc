@@ -76,7 +76,7 @@ void EnableFullDpiSupportIfAvailable(HWND hwnd) {
 }
 
 FlutterWindow::FlutterWindow(
-    int64_t id,
+    int id,
     std::string args,
     const std::shared_ptr<FlutterWindowCallback> &callback
 ) : callback_(callback), id_(id), window_handle_(nullptr), scale_factor_(1) {

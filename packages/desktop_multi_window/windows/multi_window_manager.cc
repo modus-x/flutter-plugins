@@ -9,7 +9,7 @@
 #include "flutter_window.h"
 
 namespace {
-    int64_t g_next_id_ = 0;
+    int g_next_id_ = 0;
 
     class FlutterMainWindow : public BaseFlutterWindow {
 
@@ -52,14 +52,14 @@ MultiWindowManager::MultiWindowManager() : windows_() {
 
 }
 
-int64_t MultiWindowManager::Create(std::string args) {
+int MultiWindowManager::Create(std::string args) {
     g_next_id_++;
-    int64_t id = g_next_id_;
+    int id = g_next_id_;
 
     auto window = std::make_unique<FlutterWindow>(id, std::move(args), shared_from_this());
     auto channel = window->GetWindowChannel();
-    channel->SetMethodCallHandler([this](int64_t from_window_id,
-                                         int64_t target_window_id,
+    channel->SetMethodCallHandler([this](int from_window_id,
+                                         int target_window_id,
                                          const std::string &call,
                                          flutter::EncodableValue *arguments,
                                          std::unique_ptr <flutter::MethodResult<flutter::EncodableValue>> result) {
@@ -77,8 +77,8 @@ void MultiWindowManager::AttachFlutterMainWindow(
         return;
     }
     window_channel->SetMethodCallHandler(
-            [this](int64_t from_window_id,
-                   int64_t target_window_id,
+            [this](int from_window_id,
+                   int target_window_id,
                    const std::string &call,
                    flutter::EncodableValue *arguments,
                    std::unique_ptr <flutter::MethodResult<flutter::EncodableValue>> result) {
@@ -87,27 +87,27 @@ void MultiWindowManager::AttachFlutterMainWindow(
     windows_[0] = std::make_unique<FlutterMainWindow>(main_window_handle, std::move(window_channel));
 }
 
-void MultiWindowManager::Show(int64_t id) {
+void MultiWindowManager::Show(int id) {
     auto window = windows_.find(id);
     if (window != windows_.end()) {
         window->second->Show();
     }
 }
 
-void MultiWindowManager::Hide(int64_t id) {
+void MultiWindowManager::Hide(int id) {
     auto window = windows_.find(id);
     if (window != windows_.end()) {
         window->second->Hide();
     }
 }
 
-void MultiWindowManager::Close(int64_t id) {
+void MultiWindowManager::Close(int id) {
     auto window = windows_.find(id);
     if (window != windows_.end()) {
     }
 }
 
-void MultiWindowManager::Destroy(int64_t id) {
+void MultiWindowManager::Destroy(int id) {
     auto window = windows_.find(id);
     if (window != windows_.end()) {
         window->second->Destroy();
@@ -115,29 +115,29 @@ void MultiWindowManager::Destroy(int64_t id) {
 }
 
 
-void MultiWindowManager::SetFrame(int64_t id, double x, double y, double width, double height) {
+void MultiWindowManager::SetFrame(int id, double x, double y, double width, double height) {
     auto window = windows_.find(id);
     if (window != windows_.end()) {
         window->second->SetBounds(x, y, width, height);
     }
 }
 
-void MultiWindowManager::SetTitle(int64_t id, const std::string &title) {
+void MultiWindowManager::SetTitle(int id, const std::string &title) {
     auto window = windows_.find(id);
     if (window != windows_.end()) {
         window->second->SetTitle(title);
     }
 }
 
-void MultiWindowManager::Center(int64_t id) {
+void MultiWindowManager::Center(int id) {
     auto window = windows_.find(id);
     if (window != windows_.end()) {
         window->second->Center();
     }
 }
 
-std::vector <int64_t> MultiWindowManager::GetAllSubWindowIds() {
-    std::vector <int64_t> ids;
+std::vector <int> MultiWindowManager::GetAllSubWindowIds() {
+    std::vector <int> ids;
     for (auto &window: windows_) {
         if (window.first != 0) {
             ids.push_back(window.first);
@@ -146,13 +146,13 @@ std::vector <int64_t> MultiWindowManager::GetAllSubWindowIds() {
     return ids;
 }
 
-void MultiWindowManager::OnWindowClose(int64_t id) {
+void MultiWindowManager::OnWindowClose(int id) {
     // inform main window that window closed
     auto event = flutter::EncodableValue("close");
     windows_[0]->GetWindowChannel()->InvokeMethod(id, "window_event", &event);
 }
 
-void MultiWindowManager::OnWindowDestroy(int64_t id) {
+void MultiWindowManager::OnWindowDestroy(int id) {
     // inform main window that window destroyed
     auto event = flutter::EncodableValue("destroy");
     windows_[0]->GetWindowChannel()->InvokeMethod(id, "window_event", &event);
@@ -160,8 +160,8 @@ void MultiWindowManager::OnWindowDestroy(int64_t id) {
 }
 
 void MultiWindowManager::HandleWindowChannelCall(
-        int64_t from_window_id,
-        int64_t target_window_id,
+        int from_window_id,
+        int target_window_id,
         const std::string &call,
         flutter::EncodableValue *arguments,
         std::unique_ptr <flutter::MethodResult<flutter::EncodableValue>> result

@@ -8,7 +8,7 @@
 #include <variant>
 
 std::unique_ptr<WindowChannel>
-WindowChannel::RegisterWithRegistrar(FlutterDesktopPluginRegistrarRef registrar, int64_t window_id) {
+WindowChannel::RegisterWithRegistrar(FlutterDesktopPluginRegistrarRef registrar, int window_id) {
   auto window_registrar = flutter::PluginRegistrarManager::GetInstance()
       ->GetRegistrar<flutter::PluginRegistrarWindows>(registrar);
   auto channel = std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
@@ -18,7 +18,7 @@ WindowChannel::RegisterWithRegistrar(FlutterDesktopPluginRegistrarRef registrar,
 }
 
 WindowChannel::WindowChannel(
-    int64_t window_id,
+    int window_id,
     std::unique_ptr<flutter::MethodChannel<Argument>> channel
 ) : window_id_(window_id), channel_(std::move(channel)) {
   channel_->SetMethodCallHandler([this](const flutter::MethodCall<Argument> &call, auto result) {
@@ -38,7 +38,7 @@ WindowChannel::~WindowChannel() {
 }
 
 void WindowChannel::InvokeMethod(
-    int64_t from_window_id, const std::string &method,
+    int from_window_id, const std::string &method,
     WindowChannel::Argument *arguments,
     std::unique_ptr<flutter::MethodResult<Argument>> result
 ) {
