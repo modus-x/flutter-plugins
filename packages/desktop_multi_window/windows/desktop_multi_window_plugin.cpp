@@ -99,6 +99,10 @@ namespace {
             return;
         } else if (method_call.method_name() == "getAllSubWindowIds") {
             auto window_ids = MultiWindowManager::Instance()->GetAllSubWindowIds();
+
+            // HACK! Flutter cannot encode empty list, dunno why :(
+            window_ids.push_back(-1);
+
             result->Success(flutter::EncodableValue(window_ids));
             return;
         }
