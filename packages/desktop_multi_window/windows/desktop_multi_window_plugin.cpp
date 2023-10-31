@@ -56,28 +56,28 @@ namespace {
             result->Success(flutter::EncodableValue(window_id));
             return;
         } else if (method_call.method_name() == "show") {
-            auto window_id = std::get<int>(method_call.arguments());
+            auto window_id = std::get<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Show(window_id);
             result->Success();
             return;
         } else if (method_call.method_name() == "hide") {
-            auto window_id = std::get<int>(method_call.arguments());
+            auto window_id = std::get<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Hide(window_id);
             result->Success();
             return;
         } else if (method_call.method_name() == "close") {
-            auto window_id = std::get<int>(method_call.arguments());
+            auto window_id = std::get<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Close(window_id);
             result->Success();
             return;
         } else if (method_call.method_name() == "destroy") {
-            auto window_id = std::get<int>(method_call.arguments());
+            auto window_id = std::get<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Destroy(window_id);
             result->Success();
             return;
         } else if (method_call.method_name() == "setFrame") {
             auto *arguments = std::get_if<flutter::EncodableMap>(method_call.arguments());
-            auto window_id = std::get<int>(arguments->at(flutter::EncodableValue("windowId")));
+            auto window_id = std::get<int32_t>(arguments->at(flutter::EncodableValue("windowId")));
             auto left = std::get<double_t>(arguments->at(flutter::EncodableValue("left")));
             auto top = std::get<double_t>(arguments->at(flutter::EncodableValue("top")));
             auto width = std::get<double_t>(arguments->at(flutter::EncodableValue("width")));
@@ -86,13 +86,13 @@ namespace {
             result->Success();
             return;
         } else if (method_call.method_name() == "center") {
-            auto window_id = std::get<int>(method_call.arguments());
+            auto window_id = std::get<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Center(window_id);
             result->Success();
             return;
         } else if (method_call.method_name() == "setTitle") {
             auto *arguments = std::get_if<flutter::EncodableMap>(method_call.arguments());
-            auto window_id = std::get<int>(arguments->at(flutter::EncodableValue("windowId")));
+            auto window_id = std::get<int32_t>(arguments->at(flutter::EncodableValue("windowId")));
             auto title = std::get<std::string>(arguments->at(flutter::EncodableValue("title")));
             MultiWindowManager::Instance()->SetTitle(window_id, title);
             result->Success();
