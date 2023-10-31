@@ -56,22 +56,22 @@ namespace {
             result->Success(flutter::EncodableValue(window_id));
             return;
         } else if (method_call.method_name() == "show") {
-            auto window_id = std::get<int32_t>(method_call.arguments());
+            auto window_id = std::get_if<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Show(window_id);
             result->Success();
             return;
         } else if (method_call.method_name() == "hide") {
-            auto window_id = std::get<int32_t>(method_call.arguments());
+            auto window_id = std::get_if<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Hide(window_id);
             result->Success();
             return;
         } else if (method_call.method_name() == "close") {
-            auto window_id = std::get<int32_t>(method_call.arguments());
+            auto window_id = std::get_if<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Close(window_id);
             result->Success();
             return;
         } else if (method_call.method_name() == "destroy") {
-            auto window_id = std::get<int32_t>(method_call.arguments());
+            auto window_id = std::get_if<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Destroy(window_id);
             result->Success();
             return;
@@ -86,7 +86,7 @@ namespace {
             result->Success();
             return;
         } else if (method_call.method_name() == "center") {
-            auto window_id = std::get<int32_t>(method_call.arguments());
+            auto window_id = std::get_if<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Center(window_id);
             result->Success();
             return;
