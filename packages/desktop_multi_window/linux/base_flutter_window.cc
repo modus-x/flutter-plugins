@@ -46,9 +46,9 @@ void BaseFlutterWindow::Center() {
 }
 
 void BaseFlutterWindow::Close() {
-  // auto window = GetWindow();
-  // if (!window) {
-  //   return;
-  // }
-  // gtk_window_close(GTK_WINDOW(window));
+  auto window = GetWindow();
+  if (!window) {
+    return;
+  }
+  gtk_window_close(GTK_WINDOW(window));
 }
