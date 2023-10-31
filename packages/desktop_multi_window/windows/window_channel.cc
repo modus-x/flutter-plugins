@@ -27,7 +27,7 @@ WindowChannel::WindowChannel(
       return;
     }
     auto *args = std::get_if<flutter::EncodableMap>(call.arguments());
-    auto target_window_id = args->at(flutter::EncodableValue("targetWindowId")).LongValue();
+    auto target_window_id = std::get<int>(args->at(flutter::EncodableValue("targetWindowId")));
     auto arguments = args->at(flutter::EncodableValue("arguments"));
     handler_(window_id_, target_window_id, call.method_name(), &arguments, std::move(result));
   });
