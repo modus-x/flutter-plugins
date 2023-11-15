@@ -147,64 +147,72 @@ LRESULT CALLBACK FlutterWindow::WndProc(HWND window, UINT message, WPARAM wparam
 LRESULT FlutterWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
 
   // Give Flutter, including plugins, an opportunity to handle window messages.
+
+  std::optional<LRESULT> result = std::nullopt;
+
   if (flutter_controller_) {
-    std::optional<LRESULT> result = flutter_controller_->HandleTopLevelWindowProc(hwnd, message, wparam, lparam);
+    result = flutter_controller_->HandleTopLevelWindowProc(hwnd, message, wparam, lparam);
   }
 
-  auto child_content_ = flutter_controller_ ? flutter_controller_->view()->GetNativeWindow() : nullptr;
+  // if NOT handled by plugins
+  if (result == std::nullopt) {
 
-  switch (message) {
-    case WM_FONTCHANGE: {
-      flutter_controller_->engine()->ReloadSystemFonts();
-      break;
-    }
-    case WM_DESTROY: {
-      Destroy();
-      if (!destroyed_) {
-        destroyed_ = true;
-        if (auto callback = callback_.lock()) {
-          callback->OnWindowDestroy(id_);
-        }
-      }
-      return 0;
-    }
-    case WM_CLOSE: {
-      if (auto callback = callback_.lock()) {
-        callback->OnWindowClose(id_);
-      }
-      break;
-    }
-    case WM_DPICHANGED: {
-      auto newRectSize = reinterpret_cast<RECT *>(lparam);
-      LONG newWidth = newRectSize->right - newRectSize->left;
-      LONG newHeight = newRectSize->bottom - newRectSize->top;
+      auto child_content_ = flutter_controller_ ? flutter_controller_->view()->GetNativeWindow() : nullptr;
 
-      SetWindowPos(hwnd, nullptr, newRectSize->left, newRectSize->top, newWidth,
-                   newHeight, SWP_NOZORDER | SWP_NOACTIVATE);
-
-      return 0;
-    }
-    case WM_SIZE: {
-      RECT rect;
-      GetClientRect(window_handle_, &rect);
-      if (child_content_ != nullptr) {
-        // Size and position the child window.
-        MoveWindow(child_content_, rect.left, rect.top, rect.right - rect.left,
-                   rect.bottom - rect.top, TRUE);
+      switch (message) {
+      case WM_FONTCHANGE: {
+          flutter_controller_->engine()->ReloadSystemFonts();
+          break;
       }
-      return 0;
-    }
-
-    case WM_ACTIVATE: {
-      if (child_content_ != nullptr) {
-        SetFocus(child_content_);
+      case WM_DESTROY: {
+          Destroy();
+          if (!destroyed_) {
+              destroyed_ = true;
+              if (auto callback = callback_.lock()) {
+                  callback->OnWindowDestroy(id_);
+              }
+          }
+          return 0;
       }
-      return 0;
-    }
-    default: break;
+      case WM_CLOSE: {
+          if (auto callback = callback_.lock()) {
+              callback->OnWindowClose(id_);
+          }
+      }
+      case WM_DPICHANGED: {
+          auto newRectSize = reinterpret_cast<RECT*>(lparam);
+          LONG newWidth = newRectSize->right - newRectSize->left;
+          LONG newHeight = newRectSize->bottom - newRectSize->top;
+
+          SetWindowPos(hwnd, nullptr, newRectSize->left, newRectSize->top, newWidth,
+              newHeight, SWP_NOZORDER | SWP_NOACTIVATE);
+
+          return 0;
+      }
+      case WM_SIZE: {
+          RECT rect;
+          GetClientRect(window_handle_, &rect);
+          if (child_content_ != nullptr) {
+              // Size and position the child window.
+              MoveWindow(child_content_, rect.left, rect.top, rect.right - rect.left,
+                  rect.bottom - rect.top, TRUE);
+          }
+          return 0;
+      }
+
+      case WM_ACTIVATE: {
+          if (child_content_ != nullptr) {
+              SetFocus(child_content_);
+          }
+          return 0;
+      }
+      default: break;
+      }
+
+      return DefWindowProc(window_handle_, message, wparam, lparam);
+
   }
-
-  return DefWindowProc(window_handle_, message, wparam, lparam);
+  return 0;
 }
 
 void FlutterWindow::Destroy() {
