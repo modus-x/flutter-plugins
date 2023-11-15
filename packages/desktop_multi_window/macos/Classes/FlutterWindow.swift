@@ -40,7 +40,7 @@ class BaseFlutterWindow: NSObject {
   }
 
   func resizable(resizable: Bool) {
-    if (resizable) {
+    if resizable {
       window.styleMask.insert(.resizable)
     } else {
       window.styleMask.remove(.resizable)
@@ -61,18 +61,20 @@ class FlutterWindow: BaseFlutterWindow {
 
   let window: NSWindow
 
+  let timer: Timer
+
   weak var delegate: WindowManagerDelegate?
 
   init(id: Int64, arguments: String) {
     windowId = id
-    window = NSWindow(
+    let windowF = NSWindow(
       contentRect: NSRect(x: 0, y: 0, width: 480, height: 270),
-      styleMask: [.miniaturizable, .closable, .resizable, .titled, .fullSizeContentView],
+      styleMask: [.miniaturizable, .closable, .resizable, .titled],
       backing: .buffered, defer: false)
     let project = FlutterDartProject()
     project.dartEntrypointArguments = ["multi_window", "\(windowId)", arguments]
     let flutterViewController = FlutterViewController(project: project)
-    window.contentViewController = flutterViewController
+    windowF.contentViewController = flutterViewController
 
     let plugin = flutterViewController.registrar(forPlugin: "FlutterMultiWindowPlugin")
     FlutterMultiWindowPlugin.registerInternal(with: plugin)
@@ -80,7 +82,14 @@ class FlutterWindow: BaseFlutterWindow {
     // Give app a chance to register plugin.
     FlutterMultiWindowPlugin.onWindowCreatedCallback?(flutterViewController)
 
-    super.init(window: window, channel: windowChannel)
+    timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+      windowF.contentView?.needsDisplay = true
+    }
+    timer.tolerance = 0.2
+
+    window = windowF
+
+    super.init(window: windowF, channel: windowChannel)
 
     window.delegate = self
     window.isReleasedWhenClosed = false
@@ -90,6 +99,7 @@ class FlutterWindow: BaseFlutterWindow {
 
   deinit {
     debugPrint("release window resource")
+    timer.invalidate()
     window.delegate = nil
     if let flutterViewController = window.contentViewController as? FlutterViewController {
       flutterViewController.engine.shutDownEngine()
