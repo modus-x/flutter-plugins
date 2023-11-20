@@ -33,6 +33,10 @@ class MultiWindowManager : public std::enable_shared_from_this<MultiWindowManage
 
   void SetFrame(int id, double_t x, double_t y, double_t width, double_t height);
 
+  void SetClosable(int id, bool closable);
+
+  void SetMinimumSize(int id, double_t width, double_t height);
+
   void Center(int id);
 
   void SetTitle(int id, const std::string &title);

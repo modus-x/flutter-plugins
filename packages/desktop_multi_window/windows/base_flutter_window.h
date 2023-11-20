@@ -27,6 +27,10 @@ class BaseFlutterWindow {
 
   void SetBounds(double_t x, double_t y, double_t width, double_t height);
 
+  void SetClosable(bool closable);
+
+  void SetMinimumSize(double_t width, double_t height);
+
   void Center();
 
   virtual HWND GetWindowHandle() = 0;

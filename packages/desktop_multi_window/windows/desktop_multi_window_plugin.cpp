@@ -70,6 +70,14 @@ namespace {
             MultiWindowManager::Instance()->Close(window_id);
             result->Success();
             return;
+        }
+        else if (method_call.method_name() == "closable") {
+            auto* arguments = std::get_if<flutter::EncodableMap>(method_call.arguments());
+            auto window_id = std::get<int32_t>(arguments->at(flutter::EncodableValue("windowId")));
+            auto closable = std::get<bool>(arguments->at(flutter::EncodableValue("closable")));
+            MultiWindowManager::Instance()->SetClosable(window_id, closable);
+            result->Success();
+            return;
         } else if (method_call.method_name() == "destroy") {
             auto window_id = *std::get_if<int32_t>(method_call.arguments());
             MultiWindowManager::Instance()->Destroy(window_id);

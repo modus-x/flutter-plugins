@@ -47,6 +47,19 @@ std::wstring Utf16FromUtf8(const std::string &string) {
 
 }
 
+void BaseFlutterWindow::SetMinimumSize(double_t width, double_t height)
+{
+
+}
+
+void BaseFlutterWindow::SetClosable(bool closable)
+{
+    auto handle = GetWindowHandle();
+    DWORD gclStyle = GetClassLong(handle, GCL_STYLE);
+    gclStyle = closable ? gclStyle & ~CS_NOCLOSE : gclStyle | CS_NOCLOSE;
+    SetClassLong(handle, GCL_STYLE, gclStyle);
+}
+
 void BaseFlutterWindow::Center() {
   auto handle = GetWindowHandle();
   if (!handle) {

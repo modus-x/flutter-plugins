@@ -104,6 +104,7 @@ void MultiWindowManager::Hide(int id) {
 void MultiWindowManager::Close(int id) {
     auto window = windows_.find(id);
     if (window != windows_.end()) {
+        window->second->Close();
     }
 }
 
@@ -127,6 +128,18 @@ void MultiWindowManager::SetTitle(int id, const std::string &title) {
     if (window != windows_.end()) {
         window->second->SetTitle(title);
     }
+}
+
+void MultiWindowManager::SetClosable(int id, bool closable)
+{
+    auto window = windows_.find(id);
+    if (window != windows_.end()) {
+        window->second->SetClosable(closable);
+    }
+}
+
+void MultiWindowManager::SetMinimumSize(int id, double_t width, double_t height)
+{
 }
 
 void MultiWindowManager::Center(int id) {
