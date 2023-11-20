@@ -47,6 +47,19 @@ class BaseFlutterWindow: NSObject {
     }
   }
 
+  func closable(closable: Bool) {
+    if closable {
+      window.styleMask.insert(.closable)
+    } else {
+      window.styleMask.remove(.closable)
+    }
+  }
+
+  func setMinimumSize(windowId: Int64, width: Double, height: Double) {
+    let minSize: NSSize = NSMakeSize(width, height)
+    window.minSize = minSize
+  }
+
   func close() {
     window.close()
   }
@@ -111,7 +124,7 @@ class FlutterWindow: BaseFlutterWindow {
 
 extension FlutterWindow: NSWindowDelegate {
   func windowWillClose(_ notification: Notification) {
-    delegate?.onClose(windowId: windowId)
+    delegate?.onDestroy(windowId: windowId)
   }
 
   func windowShouldClose(_ sender: NSWindow) -> Bool {

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/services.dart';
 
@@ -68,6 +67,23 @@ class WindowControllerMainImpl extends WindowController {
         'This functionality is only available on macOS',
       );
     }
+  }
+
+  @override
+  Future<void> closable(bool closable) {
+    return _channel.invokeMethod('closable', <String, dynamic>{
+      'windowId': _id,
+      'closable': closable,
+    });
+  }
+
+  @override
+  Future<void> setMinimumSize(double width, double height) {
+    return _channel.invokeMethod('setMinimumSize', <String, dynamic>{
+      'windowId': _id,
+      'width': width,
+      'height': height,
+    });
   }
 
   @override

@@ -3,7 +3,8 @@ import FlutterMacOS
 
 public class FlutterMultiWindowPlugin: NSObject, FlutterPlugin {
   static func registerInternal(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "mixin.one/flutter_multi_window", binaryMessenger: registrar.messenger)
+    let channel = FlutterMethodChannel(
+      name: "mixin.one/flutter_multi_window", binaryMessenger: registrar.messenger)
     let instance = FlutterMultiWindowPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
@@ -11,7 +12,8 @@ public class FlutterMultiWindowPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
     registerInternal(with: registrar)
     guard let app = NSApplication.shared.delegate as? FlutterAppDelegate else {
-      debugPrint("failed to find flutter main window, application delegate is not FlutterAppDelegate")
+      debugPrint(
+        "failed to find flutter main window, application delegate is not FlutterAppDelegate")
       return
     }
     guard let window = app.mainFlutterWindow else {
@@ -43,7 +45,7 @@ public class FlutterMultiWindowPlugin: NSObject, FlutterPlugin {
       let windowId = call.arguments as! Int64
       MultiWindowManager.shared.hide(windowId: windowId)
       result(nil)
-    case "close":
+    case "close", "destroy":
       let windowId = call.arguments as! Int64
       MultiWindowManager.shared.close(windowId: windowId)
       result(nil)
@@ -67,12 +69,25 @@ public class FlutterMultiWindowPlugin: NSObject, FlutterPlugin {
       let title = arguments["title"] as! String
       MultiWindowManager.shared.setTitle(windowId: windowId, title: title)
       result(nil)
-	case "resizable":
-	  let arguments = call.arguments as! [String: Any?]
-	  let windowId = arguments["windowId"] as! Int64
-	  let resizable = arguments["resizable"] as! Bool
-	  MultiWindowManager.shared.resizable(windowId: windowId, resizable: resizable)
-	  result(nil)
+    case "resizable":
+      let arguments = call.arguments as! [String: Any?]
+      let windowId = arguments["windowId"] as! Int64
+      let resizable = arguments["resizable"] as! Bool
+      MultiWindowManager.shared.resizable(windowId: windowId, resizable: resizable)
+      result(nil)
+    case "closable":
+      let arguments = call.arguments as! [String: Any?]
+      let windowId = arguments["windowId"] as! Int64
+      let resizable = arguments["closable"] as! Bool
+      MultiWindowManager.shared.closable(windowId: windowId, closable: resizable)
+      result(nil)
+    case "setMinimumSize":
+      let arguments = call.arguments as! [String: Any?]
+      let windowId = arguments["windowId"] as! Int64
+      let width = arguments["width"] as! Double
+      let height = arguments["height"] as! Double
+      MultiWindowManager.shared.setMinimumSize(windowId: windowId, width: width, height: height)
+      result(nil)
     case "setFrameAutosaveName":
       let arguments = call.arguments as! [String: Any?]
       let windowId = arguments["windowId"] as! Int64

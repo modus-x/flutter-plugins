@@ -32,12 +32,18 @@ class MultiWindowManager {
     windows[0] = mainWindow
   }
 
-  private func handleMethodCall(fromWindowId: Int64, targetWindowId: Int64, method: String, arguments: Any?, result: @escaping FlutterResult) {
+  private func handleMethodCall(
+    fromWindowId: Int64, targetWindowId: Int64, method: String, arguments: Any?,
+    result: @escaping FlutterResult
+  ) {
     guard let window = self.windows[targetWindowId] else {
-      result(FlutterError(code: "-1", message: "failed to find target window. \(targetWindowId)", details: nil))
+      result(
+        FlutterError(
+          code: "-1", message: "failed to find target window. \(targetWindowId)", details: nil))
       return
     }
-    window.windowChannel.invokeMethod(fromWindowId: fromWindowId, method: method, arguments: arguments, result: result)
+    window.windowChannel.invokeMethod(
+      fromWindowId: fromWindowId, method: method, arguments: arguments, result: result)
   }
 
   func show(windowId: Int64) {
@@ -102,6 +108,22 @@ class MultiWindowManager {
     window.resizable(resizable: resizable)
   }
 
+  func closable(windowId: Int64, closable: Bool) {
+    guard let window = windows[windowId] else {
+      debugPrint("window \(windowId) not exists.")
+      return
+    }
+    window.closable(closable: closable)
+  }
+
+  func setMinimumSize(windowId: Int64, width: Double, height: Double) {
+    guard let window = windows[windowId] else {
+      debugPrint("window \(windowId) not exists.")
+      return
+    }
+    window.setMinimumSize(windowId: windowId, width: width, height: height)
+  }
+
   func setFrameAutosaveName(windowId: Int64, name: String) {
     guard let window = windows[windowId] else {
       debugPrint("window \(windowId) not exists.")
@@ -117,10 +139,19 @@ class MultiWindowManager {
 
 protocol WindowManagerDelegate: AnyObject {
   func onClose(windowId: Int64)
+  func onDestroy(windowId: Int64)
 }
 
 extension MultiWindowManager: WindowManagerDelegate {
   func onClose(windowId: Int64) {
     windows.removeValue(forKey: windowId)
+    windows[0]?.windowChannel.invokeMethod(
+      fromWindowId: windowId, method: "window_event", arguments: "close", result: {_ in })
+  }
+
+  func onDestroy(windowId: Int64) {
+    windows.removeValue(forKey: windowId)
+    windows[0]?.windowChannel.invokeMethod(
+      fromWindowId: windowId, method: "window_event", arguments: "destroy", result: {_ in })
   }
 }

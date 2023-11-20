@@ -47,4 +47,8 @@ abstract class WindowController {
 
   /// Available only on macOS.
   Future<void> setFrameAutosaveName(String name);
+
+  Future<void> closable(bool closable);
+
+  Future<void> setMinimumSize(double width, double height);
 }
