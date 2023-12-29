@@ -175,9 +175,11 @@ LRESULT FlutterWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wparam, LP
           return 0;
       }
       case WM_CLOSE: {
+          Destroy();
           if (auto callback = callback_.lock()) {
               callback->OnWindowClose(id_);
           }
+          return 0;
       }
       case WM_DPICHANGED: {
           auto newRectSize = reinterpret_cast<RECT*>(lparam);
