@@ -164,32 +164,34 @@ LRESULT FlutterWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wparam, LP
           flutter_controller_->engine()->ReloadSystemFonts();
           break;
       }
-      case WM_DESTROY: {
+      case WM_NCDESTROY: {
+          // cleanup
           Destroy();
+          // delete from window list in MultiWindowManager
           if (!destroyed_) {
               destroyed_ = true;
-              if (auto callback = callback_.lock()) {
-                  callback->OnWindowDestroy(id_);
-              }
+              callback_->OnWindowDestroy(id_);
           }
           return 0;
       }
       case WM_CLOSE: {
-          Destroy();
-          if (auto callback = callback_.lock()) {
-              callback->OnWindowClose(id_);
-          }
+          callback_->OnWindowClose(id_);
+          DestroyWindow(window_handle_);
           return 0;
       }
       case WM_DPICHANGED: {
-          auto newRectSize = reinterpret_cast<RECT*>(lparam);
-          LONG newWidth = newRectSize->right - newRectSize->left;
-          LONG newHeight = newRectSize->bottom - newRectSize->top;
+          if (lparam)
+          {
+              auto newRectSize = reinterpret_cast<RECT*>(lparam);
+              LONG newWidth = newRectSize->right - newRectSize->left;
+              LONG newHeight = newRectSize->bottom - newRectSize->top;
 
-          SetWindowPos(hwnd, nullptr, newRectSize->left, newRectSize->top, newWidth,
-              newHeight, SWP_NOZORDER | SWP_NOACTIVATE);
-
+              SetWindowPos(hwnd, nullptr, newRectSize->left, newRectSize->top, newWidth,
+                  newHeight, SWP_NOZORDER | SWP_NOACTIVATE);
+              
+          }
           return 0;
+
       }
       case WM_SIZE: {
           RECT rect;
@@ -225,7 +227,6 @@ void FlutterWindow::Destroy() {
     flutter_controller_ = nullptr;
   }
   if (window_handle_) {
-    DestroyWindow(window_handle_);
     window_handle_ = nullptr;
   }
 }

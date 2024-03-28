@@ -41,7 +41,7 @@ class FlutterWindow : public BaseFlutterWindow {
 
  private:
 
-  std::weak_ptr<FlutterWindowCallback> callback_;
+  std::shared_ptr<FlutterWindowCallback> callback_;
 
   HWND window_handle_;
 
